@@ -1,8 +1,11 @@
 ﻿namespace BudgetApp.Models;
 
-public class Expenses
+public class Expenses:Monthly
 {
     public decimal MortgageRent { get; set; }
+    public decimal VehicleMaint { get; set;}
+    public decimal Vehicle { get; set; }
+    public decimal DiningOut { get; set; }
     public decimal Electric { get; set; }
     public decimal Water { get; set; }
     public decimal Internet { get; set; }
@@ -10,7 +13,10 @@ public class Expenses
     public decimal Streaming { get; set; }
     public decimal Entertainment { get; set; }
     public decimal Phone { get; set; }
-    public decimal Insurance { get; set; }
+    public decimal CarInsurance { get; set; }
+    public decimal Travel { get; set; }
+    public decimal HomeInsurance { get; set; }
+    public decimal Medical { get; set; }
     public decimal Savings { get; set; }
     public decimal Other { get; set; }
 }

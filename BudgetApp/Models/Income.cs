@@ -1,8 +1,8 @@
 ﻿namespace BudgetApp.Models;
 
-public class Income
+public class Income:Monthly
 {
-    public int Id { get; set; }
-    public string Name { get; set; } 
-    public decimal Amount { get; set; }
+    public decimal SideHustle {get; set;}
+    public decimal Salary {get; set;}
+    public decimal Other {get; set;}
 }
