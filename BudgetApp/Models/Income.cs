@@ -1,8 +1,15 @@
 ﻿namespace BudgetApp.Models;
 
-public class Income:Monthly
+public class Income: BudgetEntry
 {
-    public decimal SideHustle {get; set;}
-    public decimal Salary {get; set;}
-    public decimal Other {get; set;}
+    public IncomeCategory Category { get; set; }
+
+    public Income(decimal amount, Frequency frequency, IncomeCategory category) : base(
+        amount, frequency)
+    {
+        Amount = amount;
+        Frequency = frequency;
+        Category = category;
+    }
+    
 }
