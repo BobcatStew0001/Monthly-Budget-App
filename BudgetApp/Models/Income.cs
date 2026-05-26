@@ -3,8 +3,13 @@
 public class Income: BudgetEntry
 {
     public IncomeCategory Category { get; set; }
+    
+    public Income()
+    {
+        
+    }
 
-    public Income(decimal amount, Frequency frequency, IncomeCategory category) : base(
+    public Income(decimal amount, string frequency, IncomeCategory category) : base(
         amount, frequency)
     {
         Amount = amount;

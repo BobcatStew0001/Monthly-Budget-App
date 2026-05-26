@@ -1,31 +1,31 @@
-using System.Diagnostics;
-using BudgetApp.Models;
+using BudgetApp.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BudgetApp.Controllers;
+[ApiController]
+[Route("api/[controller]")]
 
-public class BudgetController : Controller
+public class BudgetController : ControllerBase
 {
-    private readonly ILogger<BudgetController> _logger;
+    
+    private readonly IBudgetRepository _budgetRepository;
+   
+    
 
-    public BudgetController(ILogger<BudgetController> logger)
+    public BudgetController(IBudgetRepository budgetRepository)
     {
-        _logger = logger;
+       
+        _budgetRepository = budgetRepository;
+    }
+    [HttpGet]
+    public IActionResult GetBudgetSummary()
+    {
+        var totalIncome = _budgetRepository.TotalIncome();
+        var totalExpense = _budgetRepository.TotalExpense();
+        var totalSavings = _budgetRepository.TotalSavings();
+        var balance = _budgetRepository.Balance();
+        return balance == null ? NotFound() : Ok(new {totalIncome, totalExpense, totalSavings, balance});
     }
 
-    public IActionResult Index()
-    {
-        return View();
-    }
-
-    public IActionResult Privacy()
-    {
-        return View();
-    }
-
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-    }
+   
 }
