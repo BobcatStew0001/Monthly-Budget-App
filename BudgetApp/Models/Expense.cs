@@ -2,10 +2,9 @@
 
 public class Expense:BudgetEntry
 {
-    public ExpenseCategory Category { get; set; }
+    public int CategoryId { get; set; }
     
-    public Expense(decimal amount, Frequency frequency, ExpenseCategory category) : base(amount, frequency)
+    public Expense(decimal amount, Frequency frequency) : base(amount, frequency)
     {
-        Category = category;
     }
 }

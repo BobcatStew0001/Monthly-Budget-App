@@ -1,7 +1,14 @@
+using System.Data;
+using Npgsql;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddScoped<IDbConnection>(sp =>
+    new NpgsqlConnection(connectionString));
 
 var app = builder.Build();
 
