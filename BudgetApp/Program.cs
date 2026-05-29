@@ -12,7 +12,7 @@ builder.Services.AddScoped<IDbConnection>(sp =>
     new NpgsqlConnection(connectionString));
 builder.Services.AddScoped<IIncomeRepository, IncomeRepository>();
 builder.Services.AddScoped<IExpenseRepository, ExpenseRepository>();
-builder.Services.AddScoped<ISavingsRepository, SavingsRepository>();
+builder.Services.AddScoped<ISavingRepository, SavingRepository>();
 builder.Services.AddScoped<IBudgetRepository, BudgetRepository>();
 builder.Services.AddCors(options =>
 {

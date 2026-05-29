@@ -12,8 +12,9 @@ public class IncomeRepository:IIncomeRepository
     }
     public Income CreateIncome(Income income)
     {
-        return _connection.QueryFirstOrDefault("INSERT INTO incomes (amount, frequency, category_id) VALUES (@Amount, @Frequency, @CategoryId) RETURNING *", income);
-    }
+        return _connection.QueryFirstOrDefault<Income>(
+            "INSERT INTO incomes (amount, frequency, category_id, source, date) " +
+            "VALUES (@Amount, @Frequency, @CategoryId, @Source, @Date) RETURNING *", income);    }
 
     public Income GetIncome(int id)
     {
@@ -27,7 +28,9 @@ public class IncomeRepository:IIncomeRepository
 
     public Income UpdateIncome(Income income)
     {
-        return _connection.QueryFirstOrDefault<Income>("UPDATE incomes SET amount=@Amount, frequency=@Frequency, category_id = @CategoryId WHERE Id=@Id", income);  
+        return _connection.QueryFirstOrDefault<Income>(
+            "UPDATE incomes SET amount=@Amount, frequency=@Frequency, category_id=@CategoryId, " +
+            "source=@Source, date=@Date WHERE id=@Id RETURNING *", income);
     }
 
     public void DeleteIncome(int id)

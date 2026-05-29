@@ -17,8 +17,9 @@ public class ExpenseRepository:IExpenseRepository
     
     public Expense CreateExpense(Expense expense)
     {
-return _connection.QueryFirstOrDefault<Expense>("INSERT INTO expenses (amount, frequency, category_id) VALUES (@Amount, @Frequency, @CategoryId) RETURNING *", expense);    }
-
+        return _connection.QueryFirstOrDefault<Expense>("INSERT INTO expenses (amount, frequency, category_id, description, date, trend) VALUES" +
+                                                        " (@Amount, @Frequency, @CategoryId, @Description, @Date, @Trend) RETURNING *", expense);
+    }
     public Expense GetExpense(int id)
     {
 return _connection.QueryFirstOrDefault<Expense>("SELECT * FROM expenses WHERE id=@Id",new {Id = id});    }
@@ -30,7 +31,10 @@ return _connection.QueryFirstOrDefault<Expense>("SELECT * FROM expenses WHERE id
 
     public Expense UpdateExpense(Expense expense)
     {
-return _connection.QueryFirstOrDefault<Expense>("UPDATE expenses SET amount=@Amount, frequency=@Frequency, category_id = @CategoryId WHERE Id=@Id", expense);    }
+        return _connection.QueryFirstOrDefault<Expense>(
+            "UPDATE expenses SET amount=@Amount, frequency=@Frequency, category_id=@CategoryId, " +
+            "description=@Description, date=@Date, trend=@Trend WHERE id=@Id RETURNING *", expense);
+    }
 
     public void DeleteExpense(int id)
     {

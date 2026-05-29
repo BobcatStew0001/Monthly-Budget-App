@@ -2,11 +2,11 @@
 
 namespace BudgetApp.Repositories;
 
-public interface ISavingsRepository
+public interface ISavingRepository
 {
-    Savings CreateSavings(Savings savings);
-    Savings GetSavings(int id);
-    IEnumerable<Savings> GetAllSavings();
-    Savings UpdateSavings(Savings savings);
+    Saving CreateSavings(Saving savings);
+    Saving GetSavings(int id);
+    IEnumerable<Saving> GetAllSavings();
+    Saving UpdateSavings(Saving savings);
     void DeleteSavings(int id);
 }

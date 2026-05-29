@@ -1,7 +1,8 @@
-﻿export interface Income 
-{    id: number,
-    amount: number, 
-    frequency: string,
-    categoryId: number,
-   
+﻿export interface Income {
+    id: number;
+    amount: number;
+    frequency: string;
+    categoryId: number;
+    source: string;
+    date: string;
 }
