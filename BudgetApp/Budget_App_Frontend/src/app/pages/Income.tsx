@@ -1,7 +1,13 @@
+import {useState, useEffect} from 'react';
+import {getIncomes} from '../../services/incomeService'; 
+import {Income as IncomeType} from "../../types/income";
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Plus, TrendingUp, Briefcase, DollarSign, Calendar } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+export function Income() {
+  const [incomes, setIncomes] = useState<IncomeType[]>([]);
+  useEffect(() => {getIncomes().then(data => setIncomes(data))}, []);
 
 const monthlyIncome = [
   { month: 'Jan', salary: 4000, freelance: 500, other: 0 },
@@ -12,12 +18,6 @@ const monthlyIncome = [
   { month: 'Jun', salary: 4500, freelance: 800, other: 100 },
 ];
 
-const incomeStreams = [
-  { name: 'Main Salary', amount: 4500, frequency: 'Monthly', status: 'Active', color: 'from-cyan-500 to-cyan-600' },
-  { name: 'Freelance Work', amount: 800, frequency: 'Variable', status: 'Active', color: 'from-purple-500 to-purple-600' },
-  { name: 'Investment Returns', amount: 100, frequency: 'Monthly', status: 'Active', color: 'from-emerald-500 to-emerald-600' },
-];
-
 const recentIncome = [
   { source: 'Company XYZ - Salary', amount: 4500, date: 'Jun 1, 2026', category: 'Salary' },
   { source: 'Freelance Client A', amount: 500, date: 'Jun 5, 2026', category: 'Freelance' },
@@ -25,8 +25,8 @@ const recentIncome = [
   { source: 'Stock Dividends', amount: 100, date: 'Jun 15, 2026', category: 'Investment' },
 ];
 
-export function Income() {
-  const totalMonthlyIncome = incomeStreams.reduce((sum, stream) => sum + stream.amount, 0);
+
+  const totalMonthlyIncome = incomes.reduce((sum, stream) => sum + stream.amount, 0);
 
   return (
     <div className="space-y-6">
@@ -64,7 +64,7 @@ export function Income() {
           </div>
           <div className="space-y-1">
             <p className="text-cyan-100 text-sm font-medium">Active Income Streams</p>
-            <p className="text-3xl font-bold">{incomeStreams.length}</p>
+            <p className="text-3xl font-bold">{incomes.length}</p>
           </div>
         </Card>
 
@@ -108,35 +108,20 @@ export function Income() {
       </Card>
 
       {/* Income Streams */}
-      <Card className="p-6 bg-white/80 backdrop-blur-lg border-white/20 shadow-xl">
-        <div className="mb-6">
-          <h3 className="text-xl font-bold text-gray-800 mb-1">Income Streams</h3>
-          <p className="text-sm text-gray-600">Your active sources of income</p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {incomeStreams.map((stream, index) => (
-            <div
+      {incomes.map((income, index) => (
+          <div
               key={index}
-              className={`p-6 bg-gradient-to-br ${stream.color} text-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow`}
-            >
-              <div className="flex items-start justify-between mb-4">
-                <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm">
-                  <TrendingUp className="w-5 h-5" />
-                </div>
-                <span className="text-xs bg-white/20 px-2 py-1 rounded-lg backdrop-blur-sm">
-                  {stream.status}
-                </span>
-              </div>
-              <h4 className="font-bold text-lg mb-2">{stream.name}</h4>
-              <p className="text-3xl font-bold mb-3">${stream.amount.toLocaleString()}</p>
-              <div className="flex items-center text-sm opacity-90">
-                <Calendar className="w-4 h-4 mr-1" />
-                {stream.frequency}
-              </div>
+              className="p-6 bg-gradient-to-br from-emerald-500 to-emerald-600 text-white rounded-2xl shadow-lg"
+          >
+            <p className="font-bold text-lg mb-2">Income #{income.id}</p>
+            <p className="text-3xl font-bold mb-3">${income.amount.toLocaleString()}</p>
+            <div className="flex items-center text-sm opacity-90">
+              <Calendar className="w-4 h-4 mr-1" />
+              {income.frequency}
             </div>
-          ))}
-        </div>
-      </Card>
+          </div>
+      ))}
+              
 
       {/* Recent Income Transactions */}
       <Card className="p-6 bg-white/80 backdrop-blur-lg border-white/20 shadow-xl">
