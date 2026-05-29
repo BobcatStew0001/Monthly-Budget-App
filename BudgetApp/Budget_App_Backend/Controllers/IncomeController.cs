@@ -17,8 +17,8 @@ public class IncomeController:ControllerBase
     [HttpGet]
     public IActionResult GetAllIncome()
     { 
-        var GetAllIncome = _incomeRepository.GetAllIncome();
-        return Ok(GetAllIncome); 
+        var incomes = _incomeRepository.GetAllIncome();
+        return Ok(incomes); 
     }
 
     [HttpGet("{id}")]
@@ -30,7 +30,7 @@ public class IncomeController:ControllerBase
     
     //New Income
     [HttpPost]
-    public IActionResult Create(Income income)
+    public IActionResult CreateIncome(Income income)
     {
         Income newIncome = _incomeRepository.CreateIncome(income);
         return Ok(newIncome);
@@ -41,7 +41,8 @@ public class IncomeController:ControllerBase
     [HttpPut("{id}")]
     public IActionResult UpdateIncome(int id, Income income)
     {
-    Income updatedIncome = _incomeRepository.UpdateIncome(income);
+        income.ID = id;
+        Income updatedIncome = _incomeRepository.UpdateIncome(income);
         return Ok(updatedIncome);
     }
     //Delete Income

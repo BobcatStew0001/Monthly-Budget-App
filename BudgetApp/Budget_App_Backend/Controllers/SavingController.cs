@@ -7,10 +7,10 @@ namespace BudgetApp.Controllers;
 [Route("api/[controller]")]
 public class SavingController:ControllerBase
 {
-    private readonly ISavingsRepository _savingsRepository;
-    public SavingController(ISavingsRepository savingsRepository)
+    private readonly ISavingRepository _savingsRepository;
+    public SavingController(ISavingRepository savingRepository)
     {
-        _savingsRepository = savingsRepository;
+        _savingsRepository = savingRepository;
     }
     
     [HttpGet]
@@ -22,23 +22,24 @@ public class SavingController:ControllerBase
     [HttpGet("{id}")]
     public IActionResult GetSavings(int id)
     {
-        Savings savings = _savingsRepository.GetSavings(id);
+        Saving savings = _savingsRepository.GetSavings(id);
         return Ok(savings);
     }
 
     [HttpPost]
-    public IActionResult Create(Savings saving)
+    public IActionResult Create(Saving saving)
     {
-        Savings newSavings = _savingsRepository.CreateSavings(saving);
+        Saving newSavings = _savingsRepository.CreateSavings(saving);
         return Ok(newSavings);
         
     }
     
 
     [HttpPut("{id}")]
-    public IActionResult UpdateSavings(int id, Savings savings)
+    public IActionResult UpdateSavings(int id, Saving savings)
     {
-        Savings updateSavings = _savingsRepository.UpdateSavings(savings);
+        Saving updateSavings = _savingsRepository.UpdateSavings(savings);
+        savings.ID = id;
         return Ok(updateSavings);
     }
     

@@ -32,7 +32,7 @@ public class ExpenseController:ControllerBase
     
     //HttpPost & HttpPut
     [HttpPost]
-    public IActionResult Create(Expense expense)
+    public IActionResult CreateExpense(Expense expense)
     {
         Expense newExpense = _expenseRepository.CreateExpense(expense);
         return Ok(newExpense);
@@ -42,12 +42,13 @@ public class ExpenseController:ControllerBase
     [HttpPut("{id}")]
     public IActionResult UpdateExpense(int id, Expense expense)
     {
+        expense.ID = id;
         Expense updatedExpense = _expenseRepository.UpdateExpense(expense);
         return Ok(updatedExpense);
     }
     //HttpDelete
     [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
+    public IActionResult DeleteExpense(int id)
     {
         _expenseRepository.DeleteExpense(id);
         return NoContent();

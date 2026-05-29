@@ -81,7 +81,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
               </div>
               <div className="space-y-1">
                 <p className="text-purple-100 text-sm font-medium">Monthly Savings</p>
-                <p className="text-3xl font-bold">$1,400</p>
+                <p className="text-3xl font-bold">${savings.reduce((sum, s) => sum + s.amount, 0).toLocaleString()}</p>
               </div>
             </Card>
 
