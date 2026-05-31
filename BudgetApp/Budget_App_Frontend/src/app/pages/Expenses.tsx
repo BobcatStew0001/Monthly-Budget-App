@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react';
-import {getExpense} from '../../services/expenseService';
+import {getExpense, createExpense} from '../../services/expenseService';
 import {Expense as ExpenseType} from "../../types/expense";
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -8,10 +8,34 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 
 export function Expenses() {
   const [expenses, setExpenses] = useState<ExpenseType[]>([]);
+  const [showModal, setShowModal] = useState(false);
+  const [newExpense, setNewExpense] = useState({
+    description: '',
+    amount: 0,
+    frequency: 'Monthly',
+    categoryId: 4,
+    date: new Date().toISOString().split('T')[0],
+    trend: '0%',
+  });
 
   useEffect(() => {
     getExpense().then(data => setExpenses(data));
   }, []);
+
+  const handleSubmit = async () => {
+    await createExpense(newExpense);
+    const updated = await getExpense();
+    setExpenses(updated);
+    setShowModal(false);
+    setNewExpense({
+      description: '',
+      amount: 0,
+      frequency: 'Monthly',
+      categoryId: 4,
+      date: new Date().toISOString().split('T')[0],
+      trend: '0%',
+    });
+  };
 
   const categoryConfig: Record<string, { icon: any; color: string }> = {
     MortgageRent:    { icon: Home,          color: 'from-cyan-500 to-cyan-600' },
@@ -61,7 +85,9 @@ export function Expenses() {
             <h2 className="text-3xl font-bold text-gray-800 mb-2">Expenses</h2>
             <p className="text-gray-600">Monitor and manage your spending</p>
           </div>
-          <Button className="bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 text-white shadow-lg">
+          <Button
+              onClick={() => setShowModal(true)}
+              className="bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 text-white shadow-lg">
             <Plus className="w-4 h-4 mr-2"/>
             Add Expense
           </Button>
@@ -202,6 +228,97 @@ export function Expenses() {
             ))}
           </div>
         </Card>
+
+        {/* Add Expense Modal */}
+        {showModal && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+              <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md mx-4">
+                <h3 className="text-2xl font-bold text-gray-800 mb-6">Add Expense</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                    <input
+                        type="text"
+                        placeholder="e.g. Rent Payment"
+                        className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-rose-400"
+                        value={newExpense.description}
+                        onChange={e => setNewExpense({...newExpense, description: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Amount</label>
+                    <input
+                        type="number"
+                        className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-rose-400"
+                        value={newExpense.amount}
+                        onChange={e => setNewExpense({...newExpense, amount: parseFloat(e.target.value)})}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Frequency</label>
+                    <select
+                        className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-rose-400"
+                        value={newExpense.frequency}
+                        onChange={e => setNewExpense({...newExpense, frequency: e.target.value})}
+                    >
+                      <option>Weekly</option>
+                      <option>BiWeekly</option>
+                      <option>Monthly</option>
+                      <option>Yearly</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                    <select
+                        className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-rose-400"
+                        value={newExpense.categoryId}
+                        onChange={e => setNewExpense({...newExpense, categoryId: parseInt(e.target.value)})}
+                    >
+                      <option value={4}>Electricity</option>
+                      <option value={5}>Water</option>
+                      <option value={6}>Groceries</option>
+                      <option value={7}>Transportation</option>
+                      <option value={8}>Entertainment</option>
+                      <option value={9}>Mortgage/Rent</option>
+                      <option value={10}>Car Insurance</option>
+                      <option value={11}>Home Insurance</option>
+                      <option value={12}>Credit Card</option>
+                      <option value={13}>Solid Waste</option>
+                      <option value={14}>Home Association</option>
+                      <option value={15}>Property Tax</option>
+                      <option value={16}>Internet</option>
+                      <option value={17}>Phone</option>
+                      <option value={18}>Education</option>
+                      <option value={19}>Other Expense</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                    <input
+                        type="date"
+                        className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-rose-400"
+                        value={newExpense.date}
+                        onChange={e => setNewExpense({...newExpense, date: e.target.value})}
+                    />
+                  </div>
+                </div>
+                <div className="flex space-x-3 mt-6">
+                  <button
+                      onClick={() => setShowModal(false)}
+                      className="flex-1 border border-gray-300 text-gray-700 rounded-xl py-2 hover:bg-gray-50 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                      onClick={handleSubmit}
+                      className="flex-1 bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-xl py-2 hover:from-rose-600 hover:to-rose-700 transition-colors"
+                  >
+                    Save Expense
+                  </button>
+                </div>
+              </div>
+            </div>
+        )}
       </div>
   );
 }
