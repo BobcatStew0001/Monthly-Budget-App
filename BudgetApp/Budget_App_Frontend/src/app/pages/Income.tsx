@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react';
-import {getIncomes} from '../../services/incomeService';
+import {getIncomes, createIncome} from '../../services/incomeService';
 import {Income as IncomeType} from "../../types/income";
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -8,10 +8,32 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 
 export function Income() {
   const [incomes, setIncomes] = useState<IncomeType[]>([]);
+  const [showModal, setShowModal] = useState(false);
+  const [newIncome, setNewIncome] = useState({
+    source: '',
+    amount: 0,
+    frequency: 'Monthly',
+    categoryId: 1,
+    date: new Date().toISOString().split('T')[0],
+  });
 
   useEffect(() => {
     getIncomes().then(data => setIncomes(data));
   }, []);
+
+  const handleSubmit = async () => {
+    await createIncome(newIncome);
+    const updated = await getIncomes();
+    setIncomes(updated);
+    setShowModal(false);
+    setNewIncome({
+      source: '',
+      amount: 0,
+      frequency: 'Monthly',
+      categoryId: 1,
+      date: new Date().toISOString().split('T')[0],
+    });
+  };
 
   const totalMonthlyIncome = incomes.reduce((sum, income) => sum + income.amount, 0);
 
@@ -29,7 +51,9 @@ export function Income() {
             <h2 className="text-3xl font-bold text-gray-800 mb-2">Income</h2>
             <p className="text-gray-600">Track your income sources and earnings</p>
           </div>
-          <Button className="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-lg">
+          <Button
+              onClick={() => setShowModal(true)}
+              className="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-lg">
             <Plus className="w-4 h-4 mr-2" />
             Add Income
           </Button>
@@ -145,6 +169,84 @@ export function Income() {
             ))}
           </div>
         </Card>
+
+        {/* Add Income Modal */}
+        {showModal && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+              <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md mx-4">
+                <h3 className="text-2xl font-bold text-gray-800 mb-6">Add Income</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Source</label>
+                    <input
+                        type="text"
+                        placeholder="e.g. Company XYZ - Salary"
+                        className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                        value={newIncome.source}
+                        onChange={e => setNewIncome({...newIncome, source: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Amount</label>
+                    <input
+                        type="number"
+                        className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                        value={newIncome.amount}
+                        onChange={e => setNewIncome({...newIncome, amount: parseFloat(e.target.value)})}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Frequency</label>
+                    <select
+                        className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                        value={newIncome.frequency}
+                        onChange={e => setNewIncome({...newIncome, frequency: e.target.value})}
+                    >
+                      <option>Weekly</option>
+                      <option>BiWeekly</option>
+                      <option>Monthly</option>
+                      <option>Yearly</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                    <select
+                        className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                        value={newIncome.categoryId}
+                        onChange={e => setNewIncome({...newIncome, categoryId: parseInt(e.target.value)})}
+                    >
+                      <option value={1}>Salary</option>
+                      <option value={2}>Interest Income</option>
+                      <option value={3}>Other Income</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                    <input
+                        type="date"
+                        className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                        value={newIncome.date}
+                        onChange={e => setNewIncome({...newIncome, date: e.target.value})}
+                    />
+                  </div>
+                </div>
+                <div className="flex space-x-3 mt-6">
+                  <button
+                      onClick={() => setShowModal(false)}
+                      className="flex-1 border border-gray-300 text-gray-700 rounded-xl py-2 hover:bg-gray-50 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                      onClick={handleSubmit}
+                      className="flex-1 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-xl py-2 hover:from-emerald-600 hover:to-emerald-700 transition-colors"
+                  >
+                    Save Income
+                  </button>
+                </div>
+              </div>
+            </div>
+        )}
       </div>
   );
 }

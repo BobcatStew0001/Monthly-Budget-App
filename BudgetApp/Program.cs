@@ -1,11 +1,14 @@
 using System.Data;
 using BudgetApp.Repositories;
+using Dapper;
 using Npgsql;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 builder.Services.AddControllers();
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddScoped<IDbConnection>(sp =>

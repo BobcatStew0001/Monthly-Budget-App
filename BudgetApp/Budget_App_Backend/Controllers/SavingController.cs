@@ -3,51 +3,51 @@ using BudgetApp.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BudgetApp.Controllers;
+
 [ApiController]
 [Route("api/[controller]")]
-public class SavingController:ControllerBase
+public class SavingController : ControllerBase
 {
-    private readonly ISavingRepository _savingsRepository;
+    private readonly ISavingRepository _savingRepository;
+
     public SavingController(ISavingRepository savingRepository)
     {
-        _savingsRepository = savingRepository;
+        _savingRepository = savingRepository;
     }
-    
+
     [HttpGet]
     public IActionResult GetAllSavings()
-    { 
-        var getAllSavings = _savingsRepository.GetAllSavings();
-        return Ok(getAllSavings); 
-    }
-    [HttpGet("{id}")]
-    public IActionResult GetSavings(int id)
     {
-        Saving savings = _savingsRepository.GetSavings(id);
+        var savings = _savingRepository.GetAllSavings();
         return Ok(savings);
     }
 
-    [HttpPost]
-    public IActionResult Create(Saving saving)
+    [HttpGet("{id}")]
+    public IActionResult GetSaving(int id)
     {
-        Saving newSavings = _savingsRepository.CreateSavings(saving);
-        return Ok(newSavings);
-        
+        Saving saving = _savingRepository.GetSaving(id);
+        return Ok(saving);
     }
-    
+
+    [HttpPost]
+    public IActionResult CreateSaving(Saving saving)
+    {
+        Saving newSaving = _savingRepository.CreateSaving(saving);
+        return Ok(newSaving);
+    }
 
     [HttpPut("{id}")]
-    public IActionResult UpdateSavings(int id, Saving savings)
+    public IActionResult UpdateSaving(int id, Saving saving)
     {
-        Saving updateSavings = _savingsRepository.UpdateSavings(savings);
-        savings.ID = id;
-        return Ok(updateSavings);
+        saving.ID = id;
+        Saving updatedSaving = _savingRepository.UpdateSaving(saving);
+        return Ok(updatedSaving);
     }
-    
+
     [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
+    public IActionResult DeleteSaving(int id)
     {
-        _savingsRepository.DeleteSavings(id);
+        _savingRepository.DeleteSaving(id);
         return NoContent();
     }
-    
 }

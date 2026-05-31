@@ -4,7 +4,7 @@ public class Expense:BudgetEntry
 {
     public ExpenseCategory Category { get; set; }
     public string Description { get; set; }
-    public DateTime Date { get; set; }
+    public string Date { get; set; }
     public string  Trend { get; set; }
     
     public Expense()
@@ -13,7 +13,7 @@ public class Expense:BudgetEntry
     }
     
     public Expense(decimal amount, string frequency, ExpenseCategory category,
-        string description, DateTime date, string trend) : base(amount, frequency)
+        string description, string date, string trend) : base(amount, frequency)
     {
        Category = category;
        Description = description;

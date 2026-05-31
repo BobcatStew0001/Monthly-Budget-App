@@ -105,3 +105,5 @@ C:\Users\brown\OneDrive\Documents\ReposCSharp\BudgetApp\BudgetApp\obj\Debug\net9
 C:\Users\brown\OneDrive\Documents\ReposCSharp\BudgetApp\BudgetApp\obj\Debug\net9.0\ref\BudgetApp.dll
 C:\Users\brown\OneDrive\Documents\ReposCSharp\BudgetApp\BudgetApp\bin\Debug\net9.0\appsettings.Development.json
 C:\Users\brown\OneDrive\Documents\ReposCSharp\BudgetApp\BudgetApp\bin\Debug\net9.0\appsettings.json
+C:\Users\brown\OneDrive\Documents\ReposCSharp\BudgetApp\BudgetApp\bin\Debug\net9.0\package-lock.json
+C:\Users\brown\OneDrive\Documents\ReposCSharp\BudgetApp\BudgetApp\bin\Debug\net9.0\package.json

@@ -6,19 +6,22 @@ using Dapper;
 public class SavingRepository : ISavingRepository
 {
     private readonly IDbConnection _connection;
+    
     public SavingRepository(IDbConnection connection)
     {
         _connection = connection;
     }
-    
-    public Saving CreateSavings(Saving savings)
+
+    public Saving CreateSaving(Saving saving)
     {
-        return _connection.QueryFirstOrDefault("INSERT INTO savings (amount, frequency, category_id) VALUES (@Amount, @Frequency, @CategoryId) RETURNING *", savings);
+        return _connection.QueryFirstOrDefault<Saving>(
+            "INSERT INTO savings (amount, frequency, category_id, goal_name, target_amount, current_amount, deadline, priority) " +
+            "VALUES (@Amount, @Frequency, @CategoryId, @GoalName, @TargetAmount, @CurrentAmount, @Deadline, @Priority) RETURNING *", saving);
     }
 
-    public Saving GetSavings(int id)
+    public Saving GetSaving(int id)
     {
-        return _connection.QueryFirstOrDefault<Saving>("SELECT * FROM savings WHERE id=@Id",new {Id = id});
+        return _connection.QueryFirstOrDefault<Saving>("SELECT * FROM savings WHERE id=@Id", new { Id = id });
     }
 
     public IEnumerable<Saving> GetAllSavings()
@@ -26,13 +29,16 @@ public class SavingRepository : ISavingRepository
         return _connection.Query<Saving>("SELECT * FROM savings");
     }
 
-    public Saving UpdateSavings(Saving savings)
+    public Saving UpdateSaving(Saving saving)
     {
-        return _connection.QueryFirstOrDefault<Saving>("UPDATE savings SET amount=@Amount, frequency=@Frequency, category_id = @CategoryId WHERE Id=@Id", savings); 
+        return _connection.QueryFirstOrDefault<Saving>(
+            "UPDATE savings SET amount=@Amount, frequency=@Frequency, category_id=@CategoryId, " +
+            "goal_name=@GoalName, target_amount=@TargetAmount, current_amount=@CurrentAmount, " +
+            "deadline=@Deadline, priority=@Priority WHERE id=@Id RETURNING *", saving);
     }
 
-    public void DeleteSavings(int id)
+    public void DeleteSaving(int id)
     {
-        _connection.Execute("DELETE FROM savings WHERE id=@Id", new {Id = id});
+        _connection.Execute("DELETE FROM savings WHERE id=@Id", new { Id = id });
     }
 }

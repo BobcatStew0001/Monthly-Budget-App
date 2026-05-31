@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react';
-import {getSavings} from "../../services/savingService";
+import {getSavings, createSaving } from "../../services/savingService";
 import {Saving as SavingType} from "../../types/saving";
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -8,6 +8,33 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 
   export function Savings() {
     const [savings, setSavings] = useState<SavingType[]>([]);
+    const [showModal, setShowModal] = useState(false);
+    const [newGoal, setNewGoal] = useState({
+      goalName: '',
+      amount: 0,
+      frequency: 'Monthly',
+      categoryId: 18,
+      targetAmount: 0,
+      currentAmount: 0,
+      deadline: '',
+      priority: 'Medium',
+    });
+    const handleSubmit = async () => {
+      await createSaving(newGoal);
+      const updated = await getSavings();
+      setSavings(updated);
+      setShowModal(false);
+      setNewGoal({
+        goalName: '',
+        amount: 0,
+        frequency: 'Monthly',
+        categoryId: 18,
+        targetAmount: 0,
+        currentAmount: 0,
+        deadline: '',
+        priority: 'Medium',
+      });
+    };
     useEffect(() => {
       getSavings().then(data => setSavings(data))
     }, []);
@@ -41,6 +68,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
               <p className="text-gray-600">Track your savings goals and progress</p>
             </div>
             <Button
+                onClick={() => setShowModal(true)}
                 className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-lg">
               <Plus className="w-4 h-4 mr-2"/>
               Add Goal
@@ -208,6 +236,114 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
               ))}
             </div>
           </Card>
+          {showModal && (
+              <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md mx-4">
+                  <h3 className="text-2xl font-bold text-gray-800 mb-6">Add Savings Goal</h3>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Goal Name</label>
+                      <input
+                          type="text"
+                          className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400"
+                          value={newGoal.goalName}
+                          onChange={e => setNewGoal({...newGoal, goalName: e.target.value})}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Amount</label>
+                      <input
+                          type="number"
+                          className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400"
+                          value={newGoal.amount}
+                          onChange={e => setNewGoal({...newGoal, amount: parseFloat(e.target.value)})}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Frequency</label>
+                      <select
+                          className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400"
+                          value={newGoal.frequency}
+                          onChange={e => setNewGoal({...newGoal, frequency: e.target.value})}
+                      >
+                        <option>Weekly</option>
+                        <option>BiWeekly</option>
+                        <option>Monthly</option>
+                        <option>Yearly</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                      <select
+                          className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400"
+                          value={newGoal.categoryId}
+                          onChange={e => setNewGoal({...newGoal, categoryId: parseInt(e.target.value)})}
+                      >
+                        <option value={18}>Savings</option>
+                        <option value={19}>Investments</option>
+                        <option value={20}>Emergency</option>
+                        <option value={21}>Retirement</option>
+                        <option value={22}>Other Savings</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Target Amount</label>
+                      <input
+                          type="number"
+                          className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400"
+                          value={newGoal.targetAmount}
+                          onChange={e => setNewGoal({...newGoal, targetAmount: parseFloat(e.target.value)})}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Current Amount</label>
+                      <input
+                          type="number"
+                          className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400"
+                          value={newGoal.currentAmount}
+                          onChange={e => setNewGoal({...newGoal, currentAmount: parseFloat(e.target.value)})}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Deadline</label>
+                      <input
+                          type="text"
+                          placeholder="e.g. Dec 2026"
+                          className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400"
+                          value={newGoal.deadline}
+                          onChange={e => setNewGoal({...newGoal, deadline: e.target.value})}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+                      <select
+                          className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400"
+                          value={newGoal.priority}
+                          onChange={e => setNewGoal({...newGoal, priority: e.target.value})}
+                      >
+                        <option>High</option>
+                        <option>Medium</option>
+                        <option>Low</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="flex space-x-3 mt-6">
+                    <button
+                        onClick={() => setShowModal(false)}
+                        className="flex-1 border border-gray-300 text-gray-700 rounded-xl py-2 hover:bg-gray-50 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                        onClick={handleSubmit}
+                        className="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-xl py-2 hover:from-amber-600 hover:to-amber-700 transition-colors"
+                    >
+                      Save Goal
+                    </button>
+                  </div>
+                </div>
+              </div>
+          )}
         </div>
     );
   }
